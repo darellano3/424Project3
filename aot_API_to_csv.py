@@ -5,7 +5,7 @@ class JSON_AOT_Parser:
     # CONSTANT endpoints for AOT
     NODES_ENDPOINT = 'https://api.arrayofthings.org/api/nodes'
     SENSORS_ENDPOINT = 'https://api.arrayofthings.org/api/sensors'
-    OBSERVATIONS_ENDPOINT = 'https://api.arrayofthings.org/api/observations'
+    OBSERVATIONS_ENDPOINT = 'https://api.arrayofthings.org/api/observations?size=5000'
 
     def __init__(self):
         # nodes dataframe
