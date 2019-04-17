@@ -38,11 +38,11 @@ ui <- dashboardPage(
   body
 )
 server <- function(input, output,session) {
-  pollutants_names <- c("CO","NO2","Ozone","SO2","PM2.5","PM10")
+  
+  nodeInfoList <- c("so2", "Ozone", "no2", "co", "h2s", "humidity", "temperature", "intensity")
   categories <- c("Good","Moderate","Sensitive Unhealthy","Unhealthy","Very Unhealthy","Hazardous")
   cb_pallete <- c("#009292","#ff6db6","#006ddb","#D55E00","#24ff24","#ffff6d")
   theme_set(theme_grey(base_size = 18)) 
-  
   
   # import dependent files
   source("www/Server.R",  local = TRUE)
