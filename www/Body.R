@@ -4,11 +4,11 @@
 
 body<-dashboardBody(
               div(style = "font-size: 20px; padding: 5px 0px; margin:0%",
-                  fluidRow(
-                    # column(6,
-                    #        box(title="Interactive Map of AOT Nodes",solidHeader = TRUE,status="primary", width=12,
-                    #            plotOutput("Map_nodes", height=400,width = 400)))
-              ))
+                    column(12,
+                           box(title="Interactive Map of AOT Nodes",solidHeader = TRUE,status="primary",
+                               column(width = 12, leafletOutput(outputId = "Map_nodes"))
+                               ))
+              )
                           
 )
 # end dashboard body layout
