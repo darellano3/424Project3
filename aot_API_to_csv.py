@@ -3,8 +3,8 @@ import requests
 
 class JSON_AOT_Parser:
     # CONSTANT endpoints for AOT
-    NODES_ENDPOINT = 'https://api.arrayofthings.org/api/nodes'
-    SENSORS_ENDPOINT = 'https://api.arrayofthings.org/api/sensors'
+    NODES_ENDPOINT = 'https://api.arrayofthings.org/api/nodes?size=200'
+    SENSORS_ENDPOINT = 'https://api.arrayofthings.org/api/sensors?size=200'
     OBSERVATIONS_ENDPOINT = 'https://api.arrayofthings.org/api/observations?size=5000'
 
     def __init__(self):
@@ -12,6 +12,8 @@ class JSON_AOT_Parser:
         r = requests.get(self.NODES_ENDPOINT)
         data = r.json()['data']
         self.nodes = pd.DataFrame(data)
+        # clean node data (Chicago only)
+        self.processNodes()
 
         # sensors dataframe
         r = requests.get(self.SENSORS_ENDPOINT)
@@ -32,6 +34,9 @@ class JSON_AOT_Parser:
         self.nodes['latitude'] = lats
         self.nodes['longitude'] = longs
         self.nodes = self.nodes.drop(['location'], axis=1)
+        self.nodes = self.nodes[self.nodes.address != 'TBD']
+        self.nodes = self.nodes[self.nodes.address != 'Georgia Tech']
+
 
     def processSensors(self):
         pass

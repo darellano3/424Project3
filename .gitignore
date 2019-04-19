@@ -1,0 +1,4 @@
+# dont track any file associated with R Studion project
+.Rproj.user
+*.Rproj
+.Rhistory
