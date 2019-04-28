@@ -50,7 +50,7 @@ output$Map_nodes <- renderLeaflet({
     addMarkers(data = COLocations, lng = ~latitude, lat = ~longitude, popup = ~node_vsn, group = "CO") %>%
     
     
-    setView(-87.647, 41.87, zoom = 9)%>%
+    setView(-87.647, 41.87, zoom = 11)%>%
     addLayersControl(
       position = "bottomright",
       baseGroups = c("OSM(default)", "Satellite View","Toner Lite"),
