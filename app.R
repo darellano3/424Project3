@@ -28,6 +28,10 @@ library(jpeg)
 library(readr)
 library(tidyr)
 library(plotly)
+#live libs
+library(tidyverse)
+library(httr)
+library(jsonlite)
 
 
 #detect the number of cpus on your machine. leave one for system processes (my server has 224 which is why I have the ifelse, you can remove that)
@@ -37,6 +41,8 @@ cores <- ifelse(cores>10,9,cores)
 options(shiny.trace=TRUE)
 
 source("www/Sidebar.R",  local = TRUE)
+
+source("www/dataScript.R", local = TRUE)
 
 source("www/Body.R",  local = TRUE)
 
