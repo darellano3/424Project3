@@ -88,10 +88,10 @@ sidebar <- dashboardSidebar(width=350,
                                                            &nbsp &nbsp Data imported from the EPA <br>
                                                            &nbsp &nbsp (United States Environmental Protection Agency) <br><br><br>
                                                            "
+                                                          )
                                                       )
-                                                      )
-                                                      )
-                                                      )
+                              )
+)
 
 
 # Define UI for application that draws a histogram
@@ -133,9 +133,18 @@ ui <- dashboardPage(
                                         width = 8, title="Interactive Map of AOT Nodes",solidHeader = TRUE,#status="success",
                                         leafletOutput(outputId = "Map_nodes", height = 800)
                                       ),
-                                      box( 
-                                        width = 4, title="Table of AOT Nodes",solidHeader = TRUE,
-                                        plotlyOutput(outputId = "table", height = 800)
+                                      box(
+                                        width = 4, solidHeader = TRUE, height = 800, title = "Table of Nodes",
+                                        tabsetPanel(
+                                          tabPanel("Temperature",  dataTableOutput("tempTable", height = 800)),
+                                          tabPanel("Humidity", dataTableOutput("humTable", height = 800)),
+                                          tabPanel("Intensity", dataTableOutput("inteTable", height = 800)),
+                                          tabPanel("NO2", dataTableOutput("NO2Table", height = 800)),
+                                          tabPanel("CO", dataTableOutput("COTable", height = 800)),
+                                          tabPanel("SO2", dataTableOutput("SO2Table", height = 800)),
+                                          tabPanel("H2S", dataTableOutput("H2STable", height = 800)),
+                                          tabPanel("OZone", dataTableOutput("OZoneTable", height = 800))
+                                        )
                                       )
                              )
                          ) 
@@ -164,6 +173,10 @@ server <- function(input, output, session) {
     }
   })
   
+  
+  
+  
+  
   #NEW
   nodeInfoList <- c("so2", "Ozone", "no2", "co", "h2s", "humidity", "temperature", "intensity")
   categories <- c("Good","Moderate","Sensitive Unhealthy","Unhealthy","Very Unhealthy","Hazardous")
@@ -174,6 +187,7 @@ server <- function(input, output, session) {
   
   source("source/Map.R", local = TRUE)
   
+  source("source/aotTable.R", local = TRUE)
   
 }
 
