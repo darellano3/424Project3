@@ -5,7 +5,13 @@
 output$tempTable <- renderDataTable({
 
   tempReports <-subset(observations_data, sensor_path == "metsense.tsys01.temperature" ) 
+  # convert fahrenheit to table 
+  tempReports$value <- round (( (tempReports$value * 9/5) + 32), digits = 0 )
+  tempReports$uom <- ('F')
+  
   tempLocations <- merge(tempReports, node_data, by.x = "node_vsn", by.y = "vsn")
+  
+  
 
   dplyr::select(tempLocations, timestamp, value, uom) 
 
