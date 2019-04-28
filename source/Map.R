@@ -20,6 +20,7 @@ OzoneLocations <- merge(OzoneReports, node_data, by.x = "node_vsn", by.y = "vsn"
 H2SReports <-subset(observations_data, sensor_path == "chemsense.h2s.concentration" ) 
 H2SLocations <- merge(H2SReports, node_data, by.x = "node_vsn", by.y = "vsn")
 
+data_of_click <- reactiveValues(clickedMarker=NULL)
 
 output$Map_nodes <- renderLeaflet({
   
@@ -30,14 +31,14 @@ output$Map_nodes <- renderLeaflet({
     addTiles(group = "OSM(default") %>%
     addProviderTiles("Esri.WorldImagery", group = "Satellite View") %>%
     addProviderTiles(providers$Stamen.Toner, group = "Toner Lite") %>%
-    addMarkers(data = inteLocations, lng = ~latitude.y, lat = ~longitude.x, popup = ~node_vsn, group = "Light Intensity(default)") %>%
-    addMarkers(data = humLocations, lng = ~latitude.y, lat = ~longitude.x, popup = ~node_vsn, group = "Humidity") %>%
-    addMarkers(data = tempLocations, lng = ~latitude.y, lat = ~longitude.x, popup = ~node_vsn, group = "Temperature") %>%
-    addMarkers(data = SO2Locations, lng = ~latitude.y, lat = ~longitude.x, popup = ~node_vsn, group = "SO2") %>%
-    addMarkers(data = H2SLocations, lng = ~latitude.y, lat = ~longitude.x, popup = ~node_vsn, group = "H2S") %>%
-    addMarkers(data = OzoneLocations, lng = ~latitude.y, lat = ~longitude.x, popup = ~node_vsn, group = "Ozone") %>%
-    addMarkers(data = NO2Locations, lng = ~latitude.y, lat = ~longitude.x, popup = ~node_vsn, group = "NO2") %>%
-    addMarkers(data = COLocations, lng = ~latitude.y, lat = ~longitude.x, popup = ~node_vsn, group = "CO") %>%
+    addMarkers(data = inteLocations, lng = ~latitude.y, lat = ~longitude.x, layerId = ~node_vsn, popup = ~node_vsn, group = "Light Intensity(default)") %>%
+    addMarkers(data = humLocations, lng = ~latitude.y, lat = ~longitude.x, layerId = ~node_vsn, popup = ~node_vsn, group = "Humidity") %>%
+    addMarkers(data = tempLocations, lng = ~latitude.y, lat = ~longitude.x, layerId = ~node_vsn , popup = ~node_vsn, group = "Temperature") %>%
+    addMarkers(data = SO2Locations, lng = ~latitude.y, lat = ~longitude.x, layerId = ~node_vsn, popup = ~node_vsn, group = "SO2") %>%
+    addMarkers(data = H2SLocations, lng = ~latitude.y, lat = ~longitude.x, layerId = ~node_vsn, popup = ~node_vsn, group = "H2S") %>%
+    addMarkers(data = OzoneLocations, lng = ~latitude.y, lat = ~longitude.x, layerId = ~node_vsn, popup = ~node_vsn, group = "Ozone") %>%
+    addMarkers(data = NO2Locations, lng = ~latitude.y, lat = ~longitude.x, layerId = ~node_vsn, popup = ~node_vsn, group = "NO2") %>%
+    addMarkers(data = COLocations, lng = ~latitude.y, lat = ~longitude.x, layerId = ~node_vsn, popup = ~node_vsn, group = "CO") %>%
     
     
     setView(-87.647, 41.87, zoom = 9)%>%
@@ -52,6 +53,7 @@ output$Map_nodes <- renderLeaflet({
 
 observeEvent(input$Map_nodes_marker_click, { 
   data_of_click$clickedMarker <- input$Map_nodes_marker_click
+  print(data_of_click$clickedMarker$id)
   currentTimeObject <- Sys.time() + hours(2)
   past24Object <- currentTimeObject - days(1)
   currentTime <- as.character(currentTimeObject)
