@@ -70,6 +70,10 @@ sidebar <- dashboardSidebar(width=350,
                                        menuSubItem("Interactive Map",tabName='Map'),
                                        menuSubItem("Heat Map",tabName='B')
                               ),
+                              menuItem('Measurement',tabName='Measurement',startExpanded = FALSE,
+                                       menuSubItem("Metric",tabName='Metric'),
+                                       menuSubItem("Imperial",tabName='Imperial')
+                              ),
                               br(),
                               shiny::conditionalPanel(condition="input$sidebar == 'tabOne'",
                                                       HTML("
@@ -94,7 +98,7 @@ sidebar <- dashboardSidebar(width=350,
 ui <- dashboardPage(
   
   #Dashboard Title
-  dashboardHeader(title = "Visualization and Visual Analytics",
+  dashboardHeader(title = "Array of Things Visualization",
                   titleWidth = 350),
   sidebar,
   dashboardBody(
@@ -140,12 +144,10 @@ ui <- dashboardPage(
                          
                          div(style = "font-size: 20px; padding: 5px 0px; margin:0%",
                              box(
-                               width = 12, solidHeader = TRUE, status = "primary", plotOutput("Test", height = 700)
+                               width = 12, solidHeader = TRUE, leafletOutput("heatMap", height = 700)
                              )
                          )
-                         
                 )
-                
     )#end of tabsetPanel
   )
 )
