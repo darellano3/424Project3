@@ -55,8 +55,8 @@ sidebar <- dashboardSidebar(width=350,
                                                     )
                                                     ),
                             
-                            br(),br(),br(),
-                            br(),br(),br(),br(),br(),br(),br(),
+                            br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+                            br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
                             
                             shiny::conditionalPanel(condition="input$sidebar == 'tabOne'",
                                                     HTML("
@@ -125,17 +125,17 @@ ui <- dashboardPage(
                              fluidRow(width = 12,
                                       box( 
                                         width = 12, title="Graph of AOT Nodes",solidHeader = TRUE,
-                                        plotlyOutput(outputId = "graph", height = 200)
+                                        plotlyOutput(outputId = "graph", height = 400)
                                       )
                              ),
                              fluidRow(width = 12,
                                       box( 
                                         width = 8, title="Interactive Map of AOT Nodes",solidHeader = TRUE,#status="success",
-                                        leafletOutput(outputId = "Map_nodes", height = 400)
+                                        leafletOutput(outputId = "Map_nodes", height = 800)
                                       ),
                                       box( 
                                         width = 4, title="Table of AOT Nodes",solidHeader = TRUE,
-                                        plotlyOutput(outputId = "table", height = 400)
+                                        plotlyOutput(outputId = "table", height = 800)
                                       )
                              )
                          ) 
@@ -144,7 +144,7 @@ ui <- dashboardPage(
                          
                          div(style = "font-size: 20px; padding: 5px 0px; margin:0%",
                              box(
-                               width = 12, solidHeader = TRUE, leafletOutput("heatMap", height = 700)
+                               width = 12, solidHeader = TRUE, leafletOutput("heatMap", height = 1200)
                              )
                          )
                 )
