@@ -1,26 +1,27 @@
 #Add longitude and latitude to observations_data on pollutants so we can actually bring data together
 #SO2_Sites <- merge(sites_reportingSO2, node_data, by.x = "vsn")
 
+#filter based on pollutants and add longitude and latitude
+#as of right now the filtering isn't working accurately but I think we can fix that later as long as the visualization works
+tempReports <-subset(observations_data, sensor_path == "metsense.tsys01.temperature" ) 
+tempLocations <- merge(tempReports, node_data, by.x = "node_vsn", by.y = "vsn")
+humReports <-subset(observations_data, sensor_path == "metsense.htu21d.humidity" )
+humLocations <- merge(humReports, node_data, by.x = "node_vsn", by.y = "vsn")
+inteReports <-subset(observations_data, sensor_path == "metsense.tsl250rd.intensity" ) 
+inteLocations <- merge(inteReports, node_data, by.x = "node_vsn", by.y = "vsn")
+SO2Reports <-subset(observations_data, sensor_path == "chemsense.so2.concentration" ) 
+SO2Locations <- merge(SO2Reports, node_data, by.x = "node_vsn", by.y = "vsn")
+COReports <-subset(observations_data, sensor_path == "chemsense.co.concentration" ) 
+COLocations <- merge(COReports, node_data, by.x = "node_vsn", by.y = "vsn")
+NO2Reports <- subset(observations_data, sensor_path == "chemsense.no2.concentration" ) 
+NO2Locations <- merge(NO2Reports, node_data, by.x = "node_vsn", by.y = "vsn")
+OzoneReports <- subset(observations_data, sensor_path == "chemsense.ozone.concentration" ) 
+OzoneLocations <- merge(OzoneReports, node_data, by.x = "node_vsn", by.y = "vsn")
+H2SReports <-subset(observations_data, sensor_path == "chemsense.h2s.concentration" ) 
+H2SLocations <- merge(H2SReports, node_data, by.x = "node_vsn", by.y = "vsn")
+
+
 output$Map_nodes <- renderLeaflet({
-  #filter based on pollutants and add longitude and latitude
-  #as of right now the filtering isn't working accurately but I think we can fix that later as long as the visualization works
-  tempReports <-subset(observations_data, sensor_path == "metsense.tsys01.temperature" ) 
-  tempLocations <- merge(tempReports, node_data, by.x = "node_vsn", by.y = "vsn")
-  humReports <-subset(observations_data, sensor_path == "metsense.htu21d.humidity" )
-  humLocations <- merge(humReports, node_data, by.x = "node_vsn", by.y = "vsn")
-  inteReports <-subset(observations_data, sensor_path == "metsense.tsl250rd.intensity" ) 
-  inteLocations <- merge(inteReports, node_data, by.x = "node_vsn", by.y = "vsn")
-  SO2Reports <-subset(observations_data, sensor_path == "chemsense.so2.concentration" ) 
-  SO2Locations <- merge(SO2Reports, node_data, by.x = "node_vsn", by.y = "vsn")
-  COReports <-subset(observations_data, sensor_path == "chemsense.co.concentration" ) 
-  COLocations <- merge(COReports, node_data, by.x = "node_vsn", by.y = "vsn")
-  NO2Reports <- subset(observations_data, sensor_path == "chemsense.no2.concentration" ) 
-  NO2Locations <- merge(NO2Reports, node_data, by.x = "node_vsn", by.y = "vsn")
-  OzoneReports <- subset(observations_data, sensor_path == "chemsense.ozone.concentration" ) 
-  OzoneLocations <- merge(OzoneReports, node_data, by.x = "node_vsn", by.y = "vsn")
-  H2SReports <-subset(observations_data, sensor_path == "chemsense.h2s.concentration" ) 
-  H2SLocations <- merge(H2SReports, node_data, by.x = "node_vsn", by.y = "vsn")
-  
   
   m = leaflet() %>%
     #the way we visualize can be changed for rn we are just putting circles on the map wherever there are SO2 readings
@@ -50,6 +51,25 @@ output$Map_nodes <- renderLeaflet({
 })
 
 observeEvent(input$Map_nodes_marker_click, { 
-  p <- input$map_marker_click
-  print(p)
+  data_of_click$clickedMarker <- input$Map_nodes_marker_click
+  currentTimeObject <- Sys.time() + hours(2)
+  past24Object <- currentTimeObject - days(1)
+  currentTime <- as.character(currentTimeObject)
+  past24  <- as.character(past24Object)
+  currentTime <- strsplit(currentTime, " ")[[1]]
+  past24 <- strsplit(past24, " ")[[1]]
+  currentTimeCheck <- paste(currentTime[1], currentTime[2], sep = "T")
+  past24Check <- paste(past24[1], past24[2], sep = "T")
+  currentTimeCheck <- substr(currentTimeCheck, 1, nchar(currentTimeCheck)-5)
+  tempCurrent <- tempLocations[grepl(currentTimeCheck, tempLocations[["timestamp"]]), ]
+  humidityCurrent <- humLocations[grepl(currentTimeCheck, humLocations[["timestamp"]]), ]
+  SO2Current <- SO2Locations[grepl(currentTimeCheck, SO2Locations[["timestamp"]]), ]
+  COCurrent <- COLocations[grepl(currentTimeCheck, COLocations[["timestamp"]]), ]
+  OzoneCurrent <- OzoneLocations[grepl(currentTimeCheck, OzoneLocations[["timestamp"]]), ]
+  inteCurrent <- inteLocations[grepl(currentTimeCheck, inteLocations[["timestamp"]]), ]
+  NO2Current <- NO2Locations[grepl(currentTimeCheck, NO2Locations[["timestamp"]]), ]
+  H2SCurrent <- H2SLocations[grepl(currentTimeCheck, H2SLocations[["timestamp"]]), ]
+  
+  
+  
 })
