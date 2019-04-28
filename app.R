@@ -187,7 +187,26 @@ server <- function(input, output, session) {
   
   source("source/Map.R", local = TRUE)
   
+  
+  
+  
+  
+  
+  
+  
   source("source/aotTable.R", local = TRUE)
+  
+  observeEvent(input$menu, {
+    
+    if (input$menu == 'Imperial'){
+      source("source/aotTable2.R", local = TRUE)
+      
+    } else if (input$menu == 'Metric'){
+        source("source/aotTable.R", local = TRUE)
+      }
+     
+  }, ignoreInit = TRUE)
+ 
   
 }
 
