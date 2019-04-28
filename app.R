@@ -117,19 +117,35 @@ ui <- dashboardPage(
                 tabPanel("Interactive Map", br(), value = "mapTab", 
                          
                          div(style = "font-size: 20px; padding: 5px 0px; margin:0%",
-                             column(width = 12,
-                                    box( 
-                                      width = 30, title="Interactive Map of AOT Nodes",solidHeader = TRUE,#status="success",
-                                      leafletOutput(outputId = "Map_nodes", height = 680)
-                                    )
+                             
+                             fluidRow(width = 12,
+                                      box( 
+                                        width = 12, title="Graph of AOT Nodes",solidHeader = TRUE,
+                                        plotlyOutput(outputId = "graph", height = 200)
+                                      )
+                             ),
+                             fluidRow(width = 12,
+                                      box( 
+                                        width = 8, title="Interactive Map of AOT Nodes",solidHeader = TRUE,#status="success",
+                                        leafletOutput(outputId = "Map_nodes", height = 400)
+                                      ),
+                                      box( 
+                                        width = 4, title="Table of AOT Nodes",solidHeader = TRUE,
+                                        plotlyOutput(outputId = "table", height = 400)
+                                      )
                              )
-                         )
+                         ) 
                 ),
                 tabPanel("Heat Map", br(), value = "BTab",
-                         box(
-                           width = 30, solidHeader = TRUE, status = "primary", plotOutput("Test", height = 400)
+                         
+                         div(style = "font-size: 20px; padding: 5px 0px; margin:0%",
+                             box(
+                               width = 12, solidHeader = TRUE, status = "primary", plotOutput("Test", height = 700)
+                             )
                          )
+                         
                 )
+                
     )#end of tabsetPanel
   )
 )
