@@ -163,4 +163,4 @@ observeEvent(input$Map_click, {
       ylab('Value')
     print(p)
   })
-}
+
