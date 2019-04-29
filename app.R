@@ -31,6 +31,7 @@ library(plotly)
 #live libs
 library(tidyverse)
 library(httr)
+library(maptools)
 library(jsonlite)
 
 
@@ -43,8 +44,6 @@ options(shiny.trace=TRUE)
 source("www/Sidebar.R",  local = TRUE)
 
 source("www/dataScript.R", local = TRUE)
-
-source("www/openaq.R", local = TRUE)
 
 source("www/Body.R",  local = TRUE)
 
@@ -90,10 +89,10 @@ sidebar <- dashboardSidebar(width=350,
                                                            &nbsp &nbsp Data imported from the EPA <br>
                                                            &nbsp &nbsp (United States Environmental Protection Agency) <br><br><br>
                                                            "
-                                                          )
                                                       )
-                              )
-)
+                                                      )
+                                                      )
+                                                      )
 
 
 # Define UI for application that draws a histogram
@@ -127,7 +126,7 @@ ui <- dashboardPage(
                              fluidRow(width = 12,
                                       box( 
                                         width = 12, title="Graph of AOT Nodes",solidHeader = TRUE,
-                                        plotlyOutput(outputId = "graph", height = 400)
+                                        plotOutput(outputId = "graph", height = 400)
                                       )
                              ),
                              fluidRow(width = 12,
@@ -166,20 +165,6 @@ ui <- dashboardPage(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
   
-  nodeInfoList <- c("so2", "Ozone", "no2", "co", "h2s", "humidity", "temperature", "intensity")
-  categories <- c("Good","Moderate","Sensitive Unhealthy","Unhealthy","Very Unhealthy","Hazardous")
-  cb_pallete <- c("#009292","#ff6db6","#006ddb","#D55E00","#24ff24","#ffff6d")
-  theme_set(theme_grey(base_size = 18)) 
-  
-  source("www/Server.R",  local = TRUE)
-  
-  source("source/Map.R", local = TRUE)
-  
-  
-  
-  
-  source("source/aotTable.R", local = TRUE)
-  
   observeEvent(input$menu, {
     if (input$menu == 'Map'){
       updateTabsetPanel(session, "tabs", selected = "mapTab")
@@ -189,18 +174,21 @@ server <- function(input, output, session) {
     }
   })
   
-
   
-  observeEvent(input$menu, {
-    
-    if (input$menu == 'Imperial'){
-      source("source/aotTable2.R", local = TRUE)
-      
-    } else if (input$menu == 'Metric'){
-      source("source/aotTable.R", local = TRUE)
-    }
-    
-  }, ignoreInit = TRUE)
+  
+  
+  
+  #NEW
+  nodeInfoList <- c("so2", "Ozone", "no2", "co", "h2s", "humidity", "temperature", "intensity")
+  categories <- c("Good","Moderate","Sensitive Unhealthy","Unhealthy","Very Unhealthy","Hazardous")
+  cb_pallete <- c("#009292","#ff6db6","#006ddb","#D55E00","#24ff24","#ffff6d")
+  theme_set(theme_grey(base_size = 18)) 
+  
+  source("www/Server.R",  local = TRUE)
+  
+  source("source/Map.R", local = TRUE)
+  
+  source("source/aotTable.R", local = TRUE)
   
 }
 

@@ -20,6 +20,7 @@ OzoneLocations <- merge(OzoneReports, node_data, by.x = "node_vsn", by.y = "vsn"
 H2SReports <-subset(observations_data, sensor_path == "chemsense.h2s.concentration" ) 
 H2SLocations <- merge(H2SReports, node_data, by.x = "node_vsn", by.y = "vsn")
 
+
 data_of_click <- reactiveValues(clickedMarker=NULL)
 
 output$Map_nodes <- renderLeaflet({
@@ -53,25 +54,32 @@ output$Map_nodes <- renderLeaflet({
 
 observeEvent(input$Map_nodes_marker_click, { 
   data_of_click$clickedMarker <- input$Map_nodes_marker_click
-  print(data_of_click$clickedMarker$id)
-  currentTimeObject <- Sys.time() + hours(2)
-  past24Object <- currentTimeObject - days(1)
-  currentTime <- as.character(currentTimeObject)
-  past24  <- as.character(past24Object)
-  currentTime <- strsplit(currentTime, " ")[[1]]
-  past24 <- strsplit(past24, " ")[[1]]
-  currentTimeCheck <- paste(currentTime[1], currentTime[2], sep = "T")
-  past24Check <- paste(past24[1], past24[2], sep = "T")
-  currentTimeCheck <- substr(currentTimeCheck, 1, nchar(currentTimeCheck)-5)
-  tempCurrent <- tempLocations[grepl(currentTimeCheck, tempLocations[["timestamp"]]), ]
-  humidityCurrent <- humLocations[grepl(currentTimeCheck, humLocations[["timestamp"]]), ]
-  SO2Current <- SO2Locations[grepl(currentTimeCheck, SO2Locations[["timestamp"]]), ]
-  COCurrent <- COLocations[grepl(currentTimeCheck, COLocations[["timestamp"]]), ]
-  OzoneCurrent <- OzoneLocations[grepl(currentTimeCheck, OzoneLocations[["timestamp"]]), ]
-  inteCurrent <- inteLocations[grepl(currentTimeCheck, inteLocations[["timestamp"]]), ]
-  NO2Current <- NO2Locations[grepl(currentTimeCheck, NO2Locations[["timestamp"]]), ]
-  H2SCurrent <- H2SLocations[grepl(currentTimeCheck, H2SLocations[["timestamp"]]), ]
   
-  
+  as.POSIXlt("2019-04-28T17:14:42", tz = "GMT", "%Y-%m-%dT%H:%M:%OS")
   
 })
+
+output$graph <- renderPlot({
+  node_id = data_of_click$clickedMarker$id
+  
+  if(is.null(node_id)){
+    node_id = "056"
+  }
+  currentTimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(1), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+  tempCurrent <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id) 
+  humidityCurrent <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  SO2Current <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  COCurrent <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  OzoneCurrent <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  inteCurrent <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  NO2Current <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  H2SCurrent <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  
+  p = ggplot() + 
+    geom_line(data = COCurrent, aes(x = timestamp, y = value), color = "blue") +
+    geom_line(data = SO2Current, aes(x = timestamp, y = value), color = "red") +
+    xlab('Time') +
+    ylab('Value')
+  print(p)
+})
+
