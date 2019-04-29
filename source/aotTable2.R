@@ -8,7 +8,7 @@ output$tempTable <- renderDataTable({
   tempReports$uom <- ('F')
   tempLocations <- merge(tempReports, node_data, by.x = "node_vsn", by.y = "vsn")
 
-  dplyr::select(tempLocations, timestamp, value, uom) 
+  dplyr::select(tempLocations, timestamp, value, uom, address) 
 
 })
 
@@ -17,7 +17,7 @@ output$OZoneTable <- renderDataTable({
   OzoneReports <- subset(observations_data, sensor_path == "chemsense.ozone.concentration" ) 
   OzoneLocations <- merge(OzoneReports, node_data, by.x = "node_vsn", by.y = "vsn")
 
-  dplyr::select(OzoneLocations, timestamp, value, uom)
+  dplyr::select(OzoneLocations, timestamp, value, uom, address)
   
 })
   
@@ -29,7 +29,7 @@ output$H2STable <- renderDataTable({
   H2SReports$uom <- ('lb/gal')
   
   H2SLocations <- merge(H2SReports, node_data, by.x = "node_vsn", by.y = "vsn")
-  dplyr::select(H2SLocations, timestamp, value, uom)
+  dplyr::select(H2SLocations, timestamp, value, uom, address)
   
 })
 
@@ -38,7 +38,7 @@ output$humTable <- renderDataTable({
   humReports <-subset(observations_data, sensor_path == "metsense.htu21d.humidity" )
   humLocations <- merge(humReports, node_data, by.x = "node_vsn", by.y = "vsn")
   
-  dplyr::select(humLocations, timestamp, value, uom)
+  dplyr::select(humLocations, timestamp, value, uom, address)
   
 })
   
@@ -50,7 +50,7 @@ output$inteTable <- renderDataTable({
   
   inteLocations <- merge(inteReports, node_data, by.x = "node_vsn", by.y = "vsn")
   
-  dplyr::select(inteLocations, timestamp, value, uom)
+  dplyr::select(inteLocations, timestamp, value, uom, address)
   
 })
   
@@ -62,7 +62,7 @@ output$SO2Table <- renderDataTable({
   
   SO2Locations <- merge(SO2Reports, node_data, by.x = "node_vsn", by.y = "vsn")
   
-  dplyr::select(SO2Locations, timestamp, value, uom)
+  dplyr::select(SO2Locations, timestamp, value, uom, address)
   
 })
     
@@ -74,7 +74,7 @@ output$COTable <- renderDataTable({
   
   COLocations <- merge(COReports, node_data, by.x = "node_vsn", by.y = "vsn")
   
-  dplyr::select(COLocations, timestamp, value, uom)
+  dplyr::select(COLocations, timestamp, value, uom, address)
   
 })
   
@@ -87,7 +87,7 @@ output$NO2Table <- renderDataTable({
   
   NO2Locations <- merge(NO2Reports, node_data, by.x = "node_vsn", by.y = "vsn")
   
-  dplyr::select(NO2Locations, timestamp, value, uom)
+  dplyr::select(NO2Locations, timestamp, value, uom, address)
   
 })
   

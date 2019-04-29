@@ -30,8 +30,12 @@ ui <- dashboardPage(
                              
                              fluidRow(width = 12,
                                       box( 
-                                        width = 12, title="Graph of AOT Nodes",solidHeader = TRUE,
+                                        width = 6, title="Graph of AOT Nodes",solidHeader = TRUE,
                                         plotlyOutput(outputId = "graph", height = 400)
+                                      ),
+                                      box( 
+                                        width = 6, title="Graph of AOT Nodes 2",solidHeader = TRUE,
+                                        plotlyOutput(outputId = "graph2", height = 400)
                                       )
                              ),
                              fluidRow(width = 12,
