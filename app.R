@@ -5,8 +5,6 @@
 #
 # Project 3 The Air that I Breathe
 # Description: Visual Representation of Air Quality in the City of Chicago
-
-
 # libraries
 library(shiny)
 library(shinydashboard)
@@ -126,7 +124,7 @@ ui <- dashboardPage(
                              fluidRow(width = 12,
                                       box( 
                                         width = 12, title="Graph of AOT Nodes",solidHeader = TRUE,
-                                        plotOutput(outputId = "graph", height = 400)
+                                        plotlyOutput(outputId = "graph", height = 400)
                                       )
                              ),
                              fluidRow(width = 12,
@@ -182,6 +180,7 @@ server <- function(input, output, session) {
   nodeInfoList <- c("so2", "Ozone", "no2", "co", "h2s", "humidity", "temperature", "intensity")
   categories <- c("Good","Moderate","Sensitive Unhealthy","Unhealthy","Very Unhealthy","Hazardous")
   cb_pallete <- c("#009292","#ff6db6","#006ddb","#D55E00","#24ff24","#ffff6d")
+  timeFrames <- c("current", "Past 24 hours", "Past Week")
   theme_set(theme_grey(base_size = 18)) 
   
   source("www/Server.R",  local = TRUE)
