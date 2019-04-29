@@ -166,20 +166,6 @@ ui <- dashboardPage(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
   
-  observeEvent(input$menu, {
-    if (input$menu == 'Map'){
-      updateTabsetPanel(session, "tabs", selected = "mapTab")
-    }
-    if (input$menu == 'B'){
-      updateTabsetPanel(session, "tabs", selected = "BTab")
-    }
-  })
-  
-  
-  
-  
-  
-  #NEW
   nodeInfoList <- c("so2", "Ozone", "no2", "co", "h2s", "humidity", "temperature", "intensity")
   categories <- c("Good","Moderate","Sensitive Unhealthy","Unhealthy","Very Unhealthy","Hazardous")
   cb_pallete <- c("#009292","#ff6db6","#006ddb","#D55E00","#24ff24","#ffff6d")
@@ -189,9 +175,21 @@ server <- function(input, output, session) {
   
   source("source/Map.R", local = TRUE)
   
+  
+  
+  
   source("source/aotTable.R", local = TRUE)
   
+  observeEvent(input$menu, {
+    if (input$menu == 'Map'){
+      updateTabsetPanel(session, "tabs", selected = "mapTab")
+    }
+    if (input$menu == 'B'){
+      updateTabsetPanel(session, "tabs", selected = "BTab")
+    }
+  })
   
+
   
   observeEvent(input$menu, {
     
