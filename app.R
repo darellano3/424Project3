@@ -39,10 +39,13 @@ cores <- ifelse(cores>10,9,cores)
 
 options(shiny.trace=TRUE)
 
+# Sidebar code here
 source("www/Sidebar.R",  local = TRUE)
 
+# aot data code here
 source("www/dataScript.R", local = TRUE)
 
+# UI/plots code here
 source("www/Body.R",  local = TRUE)
 
 # Define server logic required to draw a histogram
