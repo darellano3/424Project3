@@ -1,6 +1,6 @@
 #
 # Name: Daisy Arellano & Jhon Nunez & Cesar Lazcano & Jay Patel
-# Class: CS424 Visualization and Visual Analytics 
+# Class: CS424 Visualization and Visual Analytics
 # Spring 2019
 #
 # Project 3 The Air that I Breathe
@@ -42,27 +42,29 @@ options(shiny.trace=TRUE)
 # Sidebar code here
 source("www/Sidebar.R",  local = TRUE)
 
-# aot data code here
-source("www/dataScript.R", local = TRUE)
-
 # UI/plots code here
 source("www/Body.R",  local = TRUE)
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
-  
+
   nodeInfoList <- c("so2", "Ozone", "no2", "co", "h2s", "humidity", "temperature", "intensity")
   categories <- c("Good","Moderate","Sensitive Unhealthy","Unhealthy","Very Unhealthy","Hazardous")
   cb_pallete <- c("#009292","#ff6db6","#006ddb","#D55E00","#24ff24","#ffff6d")
   timeFrames <- c("current", "Past 24 hours", "Past Week")
-  theme_set(theme_grey(base_size = 18)) 
-  
+  theme_set(theme_grey(base_size = 18))
+
   source("www/Server.R",  local = TRUE)
-  
+
+ source("www/darksky.R", local = TRUE)
+
+  # aot data code here
+  source("www/dataScript.R", local = TRUE)
+
   source("source/Map.R", local = TRUE)
-  
+
   source("source/aotTable.R", local = TRUE)
-  
+
   observeEvent(input$menu, {
     if (input$menu == 'Map'){
       updateTabsetPanel(session, "tabs", selected = "mapTab")
@@ -71,21 +73,21 @@ server <- function(input, output, session) {
       updateTabsetPanel(session, "tabs", selected = "BTab")
     }
   })
-  
+
   observeEvent(input$menu, {
-    
+
     if (input$menu == 'Imperial'){
       source("source/aotTable2.R", local = TRUE)
-      
+
     } else if (input$menu == 'Metric'){
       source("source/aotTable.R", local = TRUE)
     }
-    
+
   }, ignoreInit = TRUE)
 
 
-  
+
 }
 
-# Run the application 
+# Run the application
 shinyApp(ui = ui, server = server)
