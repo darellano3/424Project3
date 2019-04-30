@@ -105,19 +105,37 @@ output$graph <- renderPlotly({
   NO2PastWeek <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
   H2SPastWeek <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
 
+  
+  # p = ggplot() +
+  #   geom_line(data = COPastWeek, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
+  #   geom_line(data = SO2PastWeek, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
+  #   #geom_line(data = OzonePastWeek, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
+  #   geom_line(data = NO2PastWeek, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
+  #   geom_line(data = H2SPastWeek, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
+  #   geom_point() + theme(axis.text.x=element_blank()) +
+  #   xlab('Time') + ylab('Value')
+  # print(p)
+  
+  p = ggplot() +
+    geom_line(data = COPastWeek, aes(x = timestamp, y = value, group = 1, colour = 'CO'),  size = 3 ) +
+    geom_line(data = SO2PastWeek, aes(x = timestamp, y = value,  group = 1, colour = 'SO2'),  size = 3 ) +
+    #geom_line(data = OzonePastWeek, aes(x = timestamp, y = value,  group = 1, colour = 'Ozone'),  size = 3) +
+    geom_line(data = NO2PastWeek, aes(x = timestamp, y = value,  group = 1, colour = 'NO2'),  size = 3 ) +
+    geom_line(data = H2SPastWeek, aes(x = timestamp, y = value,  group = 1, colour = 'H2S'), size = 3 ) +
+    
+    geom_point(data = COPastWeek, aes(x = timestamp, y = value, group = 1, colour = 'CO'),  size = 5 ) +
+    geom_point(data = SO2PastWeek, aes(x = timestamp, y = value, group = 1, colour = 'SO2'),  size = 5 ) +
+    #geom_point(data = OzonePastWeek, aes(x = timestamp, y = value,  group = 1, colour = 'Ozone'),  size = 5) +
+    geom_point(data = NO2PastWeek, aes(x = timestamp, y = value, group = 1, colour = 'NO2'),  size = 5 ) +
+    geom_point(data = H2SPastWeek, aes(x = timestamp, y = value, group = 1, colour = 'H2S'),  size = 5 ) +
+    
+    theme(axis.text.x=element_blank())  + 
+    
+    xlab('Time') + ylab('Value') + labs(color = "Pollutants") + 
+    scale_color_manual(values=c("#E69F00","#56B4E9","#009E73","#0072B2","#D55E00", "#E69F00", "#56B4E9","#009E73","#0072B2","#D55E00") ) 
+    
+  p
 
-      p = ggplot() +
-        geom_line(data = COPastWeek, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
-        geom_line(data = SO2PastWeek, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
-        #geom_line(data = OzonePastWeek, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
-        geom_line(data = NO2PastWeek, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
-        geom_line(data = H2SPastWeek, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
-        geom_point() + theme(axis.text.x=element_blank()) +
-        xlab('Time') + ylab('Value')
-
-      print(p)
-   
-   
 })
 
 
@@ -163,16 +181,35 @@ observeEvent(input$AOTSelect, {
       NO2PastWeek <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
       H2SPastWeek <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
       
-      p = ggplot() +
-        geom_line(data = COCurrent, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
-        geom_line(data = SO2Current, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
-        #geom_line(data = OzoneCurrent, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
-        geom_line(data = NO2Current, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
-        geom_line(data = H2SCurrent, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
-        geom_point() + theme(axis.text.x=element_blank()) +
-        xlab('Time') + ylab('Value')
+      # p = ggplot() +
+      #   geom_line(data = COCurrent, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
+      #   geom_line(data = SO2Current, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
+      #   #geom_line(data = OzoneCurrent, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
+      #   geom_line(data = NO2Current, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
+      #   geom_line(data = H2SCurrent, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
+      #   geom_point() + theme(axis.text.x=element_blank()) +
+      #   xlab('Time') + ylab('Value')
+      # print(p)
       
-      print(p)
+      p = ggplot() +
+        geom_line(data = COCurrent, aes(x = timestamp, y = value, group = 1, colour = 'CO'),  size = 3 ) +
+        geom_line(data = SO2Current, aes(x = timestamp, y = value,  group = 1, colour = 'SO2'),  size = 3 ) +
+        #geom_line(data = OzoneCurrent, aes(x = timestamp, y = value,  group = 1, colour = 'Ozone'),  size = 3) +
+        geom_line(data = NO2Current, aes(x = timestamp, y = value,  group = 1, colour = 'NO2'),  size = 3 ) +
+        geom_line(data = H2SCurrent, aes(x = timestamp, y = value,  group = 1, colour = 'H2S'), size = 3 ) +
+        
+        geom_point(data = COCurrent, aes(x = timestamp, y = value, group = 1, colour = 'CO'),  size = 5 ) +
+        geom_point(data = SO2Current, aes(x = timestamp, y = value, group = 1, colour = 'SO2'),  size = 5 ) +
+        #geom_point(data = OzoneCurrent, aes(x = timestamp, y = value,  group = 1, colour = 'Ozone'),  size = 5) +
+        geom_point(data = NO2Current, aes(x = timestamp, y = value, group = 1, colour = 'NO2'),  size = 5 ) +
+        geom_point(data = H2SCurrent, aes(x = timestamp, y = value, group = 1, colour = 'H2S'),  size = 5 ) +
+        
+        theme(axis.text.x=element_blank())  + 
+        
+        xlab('Time') + ylab('Value') + labs(color = "Pollutants") + 
+        scale_color_manual(values=c("#E69F00","#56B4E9","#009E73","#0072B2","#D55E00", "#E69F00", "#56B4E9","#009E73","#0072B2","#D55E00") ) 
+      
+      p
 
       
     })
@@ -222,14 +259,37 @@ observeEvent(input$AOTSelect, {
         NO2PastWeek <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
         H2SPastWeek <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
       
+      # p = ggplot() +
+      #   geom_line(data = COPast24, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
+      #   geom_line(data = SO2Past24, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
+      #   #geom_line(data = OzonePast24, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
+      #   geom_line(data = NO2Past24, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
+      #   geom_line(data = H2SPast24, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
+      #   geom_point() + theme(axis.text.x=element_blank()) +
+      #   xlab('Time') + ylab('Value')
+      # print(p)
+      
+      
       p = ggplot() +
-        geom_line(data = COPast24, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
-        geom_line(data = SO2Past24, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
-        #geom_line(data = OzonePast24, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
-        geom_line(data = NO2Past24, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
-        geom_line(data = H2SPast24, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
-        geom_point() + theme(axis.text.x=element_blank()) +
-        xlab('Time') + ylab('Value')
+        geom_line(data = COPast24, aes(x = timestamp, y = value, group = 1, colour = 'CO'),  size = 3 ) +
+        geom_line(data = SO2Past24, aes(x = timestamp, y = value,  group = 1, colour = 'SO2'),  size = 3 ) +
+        #geom_line(data = OzonePast24, aes(x = timestamp, y = value,  group = 1, colour = 'Ozone'),  size = 3) +
+        geom_line(data = NO2Past24, aes(x = timestamp, y = value,  group = 1, colour = 'NO2'),  size = 3 ) +
+        geom_line(data = H2SPast24, aes(x = timestamp, y = value,  group = 1, colour = 'H2S'), size = 3 ) +
+        
+        geom_point(data = COPast24, aes(x = timestamp, y = value, group = 1, colour = 'CO'),  size = 5 ) +
+        geom_point(data = SO2Past24, aes(x = timestamp, y = value, group = 1, colour = 'SO2'),  size = 5 ) +
+        #geom_point(data = OzonePast24, aes(x = timestamp, y = value,  group = 1, colour = 'Ozone'),  size = 5) +
+        geom_point(data = NO2Past24, aes(x = timestamp, y = value, group = 1, colour = 'NO2'),  size = 5 ) +
+        geom_point(data = H2SPast24, aes(x = timestamp, y = value, group = 1, colour = 'H2S'),  size = 5 ) +
+        
+        theme(axis.text.x=element_blank())  + 
+        
+        xlab('Time') + ylab('Value') + labs(color = "Pollutants") + 
+        scale_color_manual(values=c("#E69F00","#56B4E9","#009E73","#0072B2","#D55E00", "#E69F00", "#56B4E9","#009E73","#0072B2","#D55E00") ) 
+      
+      p
+      #print(p)
       
       
       })
@@ -276,16 +336,36 @@ observeEvent(input$AOTSelect, {
         H2SPastWeek <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
         
         
-        p = ggplot() +
-          geom_line(data = COPastWeek, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
-          geom_line(data = SO2PastWeek, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
-          #geom_line(data = OzonePastWeek, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
-          geom_line(data = NO2PastWeek, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
-          geom_line(data = H2SPastWeek, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
-          geom_point() + theme(axis.text.x=element_blank()) +
-          xlab('Time') + ylab('Value')
+        # p = ggplot() +
+        #   geom_line(data = COPastWeek, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
+        #   geom_line(data = SO2PastWeek, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
+        #   #geom_line(data = OzonePastWeek, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
+        #   geom_line(data = NO2PastWeek, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
+        #   geom_line(data = H2SPastWeek, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
+        #   geom_point() + theme(axis.text.x=element_blank()) +
+        #   xlab('Time') + ylab('Value')
+        # print(p)
         
-        print(p)
+        p = ggplot() +
+          geom_line(data = COPastWeek, aes(x = timestamp, y = value, group = 1, colour = 'CO'),  size = 3 ) +
+          geom_line(data = SO2PastWeek, aes(x = timestamp, y = value,  group = 1, colour = 'SO2'),  size = 3 ) +
+          #geom_line(data = OzonePastWeek, aes(x = timestamp, y = value,  group = 1, colour = 'Ozone'),  size = 3) +
+          geom_line(data = NO2PastWeek, aes(x = timestamp, y = value,  group = 1, colour = 'NO2'),  size = 3 ) +
+          geom_line(data = H2SPastWeek, aes(x = timestamp, y = value,  group = 1, colour = 'H2S'), size = 3 ) +
+          
+          geom_point(data = COPastWeek, aes(x = timestamp, y = value, group = 1, colour = 'CO'),  size = 5 ) +
+          geom_point(data = SO2PastWeek, aes(x = timestamp, y = value, group = 1, colour = 'SO2'),  size = 5 ) +
+          #geom_point(data = OzonePastWeek, aes(x = timestamp, y = value,  group = 1, colour = 'Ozone'),  size = 5) +
+          geom_point(data = NO2PastWeek, aes(x = timestamp, y = value, group = 1, colour = 'NO2'),  size = 5 ) +
+          geom_point(data = H2SPastWeek, aes(x = timestamp, y = value, group = 1, colour = 'H2S'),  size = 5 ) +
+          
+          theme(axis.text.x=element_blank())  + 
+          
+          xlab('Time') + ylab('Value') + labs(color = "Pollutants") + 
+          scale_color_manual(values=c("#E69F00","#56B4E9","#009E73","#0072B2","#D55E00", "#E69F00", "#56B4E9","#009E73","#0072B2","#D55E00") ) 
+        
+        p
+        #print(p)
         
         
       })
