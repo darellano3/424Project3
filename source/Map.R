@@ -21,9 +21,8 @@ H2SReports <-subset(observations_data, sensor_path == "chemsense.h2s.concentrati
 H2SLocations <- merge(H2SReports, node_data, by.x = "node_vsn", by.y = "vsn")
 
 
-data_of_click <- reactiveValues(Clicks=list())
-data_of_click2 <- reactiveValues(clickedMarker=NULL)
-counter <- 0
+data_of_click <- reactiveValues(clickedMarker=NULL)
+
 output$Map_nodes <- renderLeaflet({
   
   m = leaflet() %>%
@@ -53,114 +52,246 @@ output$Map_nodes <- renderLeaflet({
   m
 })
 
-
 observeEvent(input$Map_nodes_marker_click, { 
   data_of_click$clickedMarker <- input$Map_nodes_marker_click
-  counter<-counter + 1
-  #print("CLICKED MARKER")
-  #print(counter)
-  })
-
-observeEvent(input$Map_click, { 
-  data_of_click$clickedMarker <- NULL
-  #ounter <- counter + 1
-  #print("UNCLICKED MARKER")
-  #print(counter)
+  
+  as.POSIXlt("2019-04-28T17:14:42", tz = "GMT", "%Y-%m-%dT%H:%M:%OS")
+  
 })
 
-  output$graph <- renderPlotly({
-    node_id = data_of_click$clickedMarker$id
-    
-    if(is.null(node_id)){
-      node_id = "004"
-    }
-    currentTimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(1), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
-    past24TimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(24), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
-    pastWeekTimeObject <- as.POSIXlt(Sys.Date() - lubridate::days(7), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
-    
-    
-    tempCurrent <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id) 
-    humidityCurrent <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    SO2Current <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    COCurrent <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    OzoneCurrent <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    inteCurrent <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    NO2Current <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    H2SCurrent <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    
-    tempPast24 <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id) 
-    humPast24 <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    SO2Past24 <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    COPast24 <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    OzonePast24 <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    intePast24 <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    NO2Past24 <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    H2SPast24 <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    
-    tempPastWeek <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id) 
-    humPastWeek <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    SO2PastWeek <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    COPastWeek <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    OzonePastWeek <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    intePastWeek <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    NO2PastWeek <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    H2SPastWeek <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    
-    
-    
-    p = ggplot(data = COCurrent, aes(x = timestamp, y = value, group = 1), color = "blue") + 
-      geom_line(data = COCurrent, aes(x = timestamp, y = value), color = "blue") +
-      geom_line(data = SO2Current, aes(x = timestamp, y = value), color = "red") +
-      xlab('Time') +
-      ylab('Value')
-    print(p)
-  })
 
-  output$graph2 <- renderPlotly({
-    node_id = data_of_click2$clickedMarker$id
+
+
+
+
+
+
+
+output$graph <- renderPlotly({
+  node_id = data_of_click$clickedMarker$id
+  
+  if(is.null(node_id)){
+    node_id = "004"
+  }
+  currentTimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(1), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+  past24TimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(24), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+  pastWeekTimeObject <- as.POSIXlt(Sys.Date() - lubridate::days(7), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+  
+  
+  tempCurrent <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  humidityCurrent <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  SO2Current <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  COCurrent <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  OzoneCurrent <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  inteCurrent <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  NO2Current <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  H2SCurrent <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+
+  tempPast24 <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  humPast24 <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  SO2Past24 <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  COPast24 <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  OzonePast24 <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  intePast24 <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  NO2Past24 <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  H2SPast24 <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+
+  tempPastWeek <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+  humPastWeek <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+  SO2PastWeek <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+  COPastWeek <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+  OzonePastWeek <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+  intePastWeek <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+  NO2PastWeek <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+  H2SPastWeek <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+
+
+      p = ggplot() +
+        geom_line(data = COPastWeek, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
+        geom_line(data = SO2PastWeek, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
+        #geom_line(data = OzonePastWeek, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
+        geom_line(data = NO2PastWeek, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
+        geom_line(data = H2SPastWeek, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
+        geom_point() + theme(axis.text.x=element_blank()) +
+        xlab('Time') + ylab('Value')
+
+      print(p)
+   
+   
+})
+
+
+observeEvent(input$AOTSelect, {
+  
+  
+  if (input$AOTSelect == 'current'){
+    output$graph <- renderPlotly({
+      node_id = data_of_click$clickedMarker$id
+      
+      if(is.null(node_id)){
+        node_id = "004"
+      }
+      currentTimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(1), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+      past24TimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(24), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+      pastWeekTimeObject <- as.POSIXlt(Sys.Date() - lubridate::days(7), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+      
+      
+      tempCurrent <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      humidityCurrent <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      SO2Current <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      COCurrent <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      OzoneCurrent <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      inteCurrent <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      NO2Current <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      H2SCurrent <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      
+      tempPast24 <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      humPast24 <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      SO2Past24 <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      COPast24 <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      OzonePast24 <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      intePast24 <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      NO2Past24 <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      H2SPast24 <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      
+      tempPastWeek <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+      humPastWeek <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+      SO2PastWeek <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+      COPastWeek <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+      OzonePastWeek <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+      intePastWeek <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+      NO2PastWeek <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+      H2SPastWeek <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+      
+      p = ggplot() +
+        geom_line(data = COCurrent, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
+        geom_line(data = SO2Current, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
+        #geom_line(data = OzoneCurrent, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
+        geom_line(data = NO2Current, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
+        geom_line(data = H2SCurrent, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
+        geom_point() + theme(axis.text.x=element_blank()) +
+        xlab('Time') + ylab('Value')
+      
+      print(p)
+
+      
+    })
     
-    if(is.null(node_id)){
-      node_id = "081"
-    }
-    currentTimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(1), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
-    past24TimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(24), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
-    pastWeekTimeObject <- as.POSIXlt(Sys.Date() - lubridate::days(7), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+      
     
     
-    tempCurrent <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id) 
-    humidityCurrent <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    SO2Current <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    COCurrent <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    OzoneCurrent <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    inteCurrent <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    NO2Current <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    H2SCurrent <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+  } else if (input$AOTSelect == '24 hours'){
     
-    tempPast24 <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id) 
-    humPast24 <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    SO2Past24 <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    COPast24 <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    OzonePast24 <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    intePast24 <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    NO2Past24 <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
-    H2SPast24 <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+      
+      
+      output$graph <- renderPlotly({
+        node_id = data_of_click$clickedMarker$id
+        
+        if(is.null(node_id)){
+          node_id = "004"
+        }
+        currentTimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(1), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+        past24TimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(24), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+        pastWeekTimeObject <- as.POSIXlt(Sys.Date() - lubridate::days(7), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+        
+        
+        tempCurrent <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        humidityCurrent <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        SO2Current <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        COCurrent <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        OzoneCurrent <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        inteCurrent <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        NO2Current <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        H2SCurrent <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        
+        tempPast24 <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        humPast24 <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        SO2Past24 <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        COPast24 <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        OzonePast24 <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        intePast24 <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        NO2Past24 <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        H2SPast24 <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        
+        tempPastWeek <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        humPastWeek <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        SO2PastWeek <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        COPastWeek <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        OzonePastWeek <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        intePastWeek <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        NO2PastWeek <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        H2SPastWeek <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+      
+      p = ggplot() +
+        geom_line(data = COPast24, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
+        geom_line(data = SO2Past24, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
+        #geom_line(data = OzonePast24, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
+        geom_line(data = NO2Past24, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
+        geom_line(data = H2SPast24, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
+        geom_point() + theme(axis.text.x=element_blank()) +
+        xlab('Time') + ylab('Value')
+      
+      
+      })
+   
     
-    tempPastWeek <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id) 
-    humPastWeek <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    SO2PastWeek <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    COPastWeek <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    OzonePastWeek <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    intePastWeek <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    NO2PastWeek <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
-    H2SPastWeek <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+  } else if (input$AOTSelect == '7 days'){
     
-    
-    
-    p = ggplot(data = COCurrent, aes(x = timestamp, y = value, group = 1), color = "blue") + 
-      geom_line(data = COCurrent, aes(x = timestamp, y = value), color = "blue") +
-      geom_line(data = SO2Current, aes(x = timestamp, y = value), color = "red") +
-      xlab('Time') +
-      ylab('Value')
-    print(p)
-  })
+      output$graph <- renderPlotly({
+        node_id = data_of_click$clickedMarker$id
+        
+        if(is.null(node_id)){
+          node_id = "004"
+        }
+        currentTimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(1), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+        past24TimeObject <- as.POSIXlt(Sys.Date() - lubridate::hours(24), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+        pastWeekTimeObject <- as.POSIXlt(Sys.Date() - lubridate::days(7), tz = "GMT", "%Y-%m-%d %H:%M:%OS" )
+        
+        
+        tempCurrent <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        humidityCurrent <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        SO2Current <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        COCurrent <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        OzoneCurrent <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        inteCurrent <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        NO2Current <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        H2SCurrent <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        
+        tempPast24 <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        humPast24 <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        SO2Past24 <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        COPast24 <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        OzonePast24 <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        intePast24 <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        NO2Past24 <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        H2SPast24 <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > currentTimeObject & node_vsn == node_id)
+        
+        tempPastWeek <- subset(tempLocations, as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(tempLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        humPastWeek <- subset(humLocations, as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(humLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        SO2PastWeek <- subset(SO2Locations, as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(SO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        COPastWeek <- subset(COLocations, as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(COLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        OzonePastWeek <- subset(OzoneLocations, as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(OzoneLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        intePastWeek <- subset(inteLocations, as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(inteLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        NO2PastWeek <- subset(NO2Locations, as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(NO2Locations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        H2SPastWeek <- subset(H2SLocations, as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) < as.POSIXlt(Sys.time(),tz = "GMT", "%Y-%m-%d %H:%M:%OS" ) & as.POSIXlt(H2SLocations[["timestamp"]], tz = "GMT", "%Y-%m-%dT%H:%M:%OS" ) > past24TimeObject & node_vsn == node_id)
+        
+        
+        p = ggplot() +
+          geom_line(data = COPastWeek, aes(x = timestamp, y = value, colour = "CO", group = 1), color = "#56B4E9", size = 3) +
+          geom_line(data = SO2PastWeek, aes(x = timestamp, y = value, colour = "S02", group = 1), color = "#009E73", size = 3) +
+          #geom_line(data = OzonePastWeek, aes(x = timestamp, y = value, colour = "Ozone", group = 1), color = "#F0E442", size = 3) +
+          geom_line(data = NO2PastWeek, aes(x = timestamp, y = value, colour = "NO2", group = 1), color = "#0072B2", size = 3) +
+          geom_line(data = H2SPastWeek, aes(x = timestamp, y = value, colour = "H2S", group = 1), color = "#D55E00", size = 3) +
+          geom_point() + theme(axis.text.x=element_blank()) +
+          xlab('Time') + ylab('Value')
+        
+        print(p)
+        
+        
+      })
+   
+
+  }
+  
+}, ignoreInit = TRUE)
 

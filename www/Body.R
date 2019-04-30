@@ -1,5 +1,8 @@
 # This file contains the UI body (visualizations) layout
 
+AOEChoices <- c("current","24 hours","7 days")
+#PolChoices <- c("CO","SO2","NO2", "H2S")
+
 # Define UI for application that draws a histogram
 ui <- dashboardPage(
   
@@ -30,9 +33,17 @@ ui <- dashboardPage(
                              
                              fluidRow(width = 12,
                                       box( 
-                                        width = 6, title="Graph of AOT Nodes",solidHeader = TRUE,
-                                        plotlyOutput(outputId = "graph", height = 400)
+                                        width = 12, title="Graph of AOT Nodes",solidHeader = TRUE,
+                                        plotlyOutput(outputId = "graph", height = 350)#old = 400
+                                      ),
+                                      
+                                      fluidRow(
+                                        box(
+                                          width = 12, solidHeader = TRUE,
+                                            selectInput(inputId = "AOTSelect", label = "Select data", choices = AOEChoices, selected = "7 days" )
+                                        )
                                       )
+                                      
                              ),
                              fluidRow(width = 12,
                                       box( 
