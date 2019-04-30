@@ -3,41 +3,40 @@ NODES_ENDPOINT = 'https://api.arrayofthings.org/api/nodes?size=200&location=chic
 SENSORS_ENDPOINT = 'https://api.arrayofthings.org/api/sensors?size=200'
 OBSERVATIONS_ENDPOINT = 'https://api.arrayofthings.org/api/observations?size=5000'
 
-# Anything that calls autoInvalidate will automatically invalidate
-# every 60 seconds.
-autoInvalidate <- reactiveTimer(90 * 1000)
+# Anything that calls autoInvalidate will automatically invalidate every 60 seconds.
+autoInvalidate <- reactiveTimer(60 * 1000, session = session)
 
-observe({
+obs <- reactive({
   #invalidating timer function - triggers every minute
   autoInvalidate()
-  print("updating data")
+  print(">> updating AOT data")
   
   getData()
 })
+debounce(obs, 60*1000)
 
 
 #function to retrieve data and update csv
 getData <- function() {
   # update all data files (data log) - avoid reactives
   isolate(initNodes())
+  Sys.sleep(0.2)
   isolate(initSensors())
+  Sys.sleep(0.2)
   isolate(initObservations())
   
   # read from file - this approach allows us to remove ourself from reactive scope
   # and gives us better data managability
   node_data <- fread("data/nodes.csv",nThread = cores,data.table=F)
   observations_data <- fread("data/observations.csv",nThread = cores,data.table=F)
-  sensors_data <-fread("data/sensors.csv",nThread = cores,data.table=F)
+  sensors_data <- fread("data/sensors.csv",nThread = cores,data.table=F)
   
   print(">> data retrieved")
-  print(head(observations_data))
+  print(Sys.time())
 }
 
 
 initNodes <- function() {
-  #invalidating timer function - triggers every minute
-  print(">> nodes init")
-  
   # create requests from endpoints
   n_request <- GET(url = NODES_ENDPOINT)
   
@@ -64,9 +63,6 @@ initNodes <- function() {
 }
 
 initSensors <- function() {
-  #invalidating timer function - triggers every minute
-  print(">> sensors init")
-  
   # create requests from endpoints
   s_request <- GET(url = SENSORS_ENDPOINT)
   
@@ -80,8 +76,6 @@ initSensors <- function() {
 }
 
 initObservations <- function() {
-  print(">> observations init")
-  
   # create requests from endpoints
   o_request <- GET(url = OBSERVATIONS_ENDPOINT)
   
@@ -104,6 +98,3 @@ initObservations <- function() {
   o_df = subset(o_df, select = c(value,uom,timestamp,sensor_path,node_vsn,latitude,longitude) )
   write.csv(o_df,'data/observations.csv', row.names = FALSE)
 }
-
-# get data function call
-getData()
